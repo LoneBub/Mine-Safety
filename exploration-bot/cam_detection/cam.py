@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 import requests
 
-base_url = 'http://192.168.0.100:81'
+base_url = 'http://192.168.4.23:81'
 
 response = requests.get(base_url+"/stream", stream=True)
 buffer = bytes()
 
-for chunk in response.iter_content(chunk_size=1024):
+for chunk in response.iter_content(chunk_size=3072):
     buffer += chunk
     a = buffer.find(b'\xff\xd8')
     b = buffer.find(b'\xff\xd9')

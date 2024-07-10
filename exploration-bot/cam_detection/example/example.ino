@@ -15,8 +15,8 @@
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char* ssid = "Starlink 5G_2566";   //Enter SSID WIFI Name
-const char* password = "starlink";   //Enter WIFI Password
+const char* ssid = "ESP32";   //Enter SSID WIFI Name
+const char* password = "";   //Enter WIFI Password
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM    -1
