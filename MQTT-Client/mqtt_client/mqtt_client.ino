@@ -1,13 +1,13 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <Adafruit_Sensor.h>
+#include "Adafruit_Sensor.h"
 #include <DHT.h>
 #include <DHT_U.h>
 
 // Define DHT sensor type and pin
-#define DHTPIN A13      // Digital pin connected to the DHT sensor
+#define DHTPIN A13      // D15 pin connected to the DHT sensor
 #define DHTTYPE DHT11 // DHT11 sensor
-#define MQ2_PIN 2
+#define MQ2_PIN 14
 
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
@@ -19,7 +19,10 @@ const char* password = "isuq5478";
 // Replace your MQ vTT Broker IP address here:
 const char* mqtt_server = ("192.168.177.86");
 
+
+// Initializing ESP client
 WiFiClient espClient;
+// Initializing ESP as MQTT Client
 PubSubClient client(espClient);
 
 long lastMsg = 0;
@@ -41,9 +44,10 @@ void setup_wifi() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
+  
   WiFi.begin(ssid, password);
 
+  // reset esp after 10 seconds if it is not connected to any wifi
   int c=0;
   while (WiFi.status() != WL_CONNECTED) {
     blink_led(2,200); //blink LED twice (for 200ms ON time) to indicate that wifi not connected
@@ -65,7 +69,6 @@ void setup_wifi() {
 void connect_mqttServer() {
   // Loop until we're reconnected
   while (!client.connected()) {
-
         //first check if connected to wifi
         if(WiFi.status() != WL_CONNECTED){
           //if not connected, then first connect to wifi
@@ -125,35 +128,43 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   Serial.begin(115200);
   delay(1000);
-  Serial.println("DHT11 test!");
-  Serial.println("MQ-2 Smoke Sensor Test");
-
+  
   dht.begin();
 
   setup_wifi();
   client.setServer(mqtt_server,1883);//1883 is the default port for MQTT server
   client.setCallback(callback);
-}
 
+  pinMode(MQ2_PIN, INPUT);
+
+
+  Serial.println("Warming up the MQ2 sensor");
+  //delay(20000);  // wait for the MQ2 to warm up
+}
 
 
 void loop() {
 
   delay(2000);
 
-  // Reading temperature or humidity takes about 250 milliseconds!
-  int analogValue = analogRead(MQ2_PIN);
+// MQ-2 sensor reading
+  int mq2_val = digitalRead(MQ2_PIN);
 
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+  if (mq2_val == HIGH){
+    Serial.println("The gas is NOT present");
+  }
+  else{
+    Serial.println("The gas is present");
+  }
 
-  Serial.print("MQ-2 Sensor Value: ");
-  Serial.println(analogValue);
+// DHT sensor reading
+  float dht_humidity = dht.readHumidity();
+  float dht_temp = dht.readTemperature();
+
   delay(1000);
-  
-
+ 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
+  if (isnan(dht_humidity) || isnan(dht_temp)) {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
@@ -168,22 +179,19 @@ void loop() {
   long now = millis();
   if (now - lastMsg > 4000) {
     lastMsg = now;
-    float testt = h;
-    float test2 = t;
-    int testtt = analogValue;
-      // Example float value
-    char buffer1[10];  // Buffer to hold the float as a string
-    dtostrf(testt, 1, 2, buffer1);  // Convert float to string (1 integer part, 2 decimal parts
+
+    char buffer1[10]; 
+    dtostrf(dht_temp, 1, 2, buffer1);
     
-    char buffer2[10];  // Buffer to hold the int as a string
-    itoa(testtt, buffer2, 10);
+    char buffer2[10];  
+    dtostrf(dht_humidity,1,2, buffer2);
 
-    char buffer3[10];  // Buffer to hold the float as a string
-    dtostrf(test2, 1, 2, buffer3);
+    char buffer3[10];  
+    itoa(mq2_val,buffer3,10);
 
-    client.publish("esp32/sensor1", buffer1); //topic name (to which this ESP32 publishes its data). 88 is the dummy value.
-    client.publish("esp32/sensor2", buffer3);
+    client.publish("esp32/sensor1", buffer1);
     client.publish("esp32/sensor1", buffer2);
+    client.publish("esp32/sensor2", buffer3);
   }
  
 }
