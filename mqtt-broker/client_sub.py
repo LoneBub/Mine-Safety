@@ -1,6 +1,15 @@
 import paho.mqtt.client as mqtt
 import time
+import json
 
+sensors = ['temp', 'humidity', 'gas']
+
+def json_data(sensor_values):
+    dict_from_list =dict(zip(sensors,sensor_values))
+    with open('data.json','w') as json_file:
+        json.dump(dict_from_list, json_file,indent=4)
+        
+        
 def on_connect(client, userdata, flags, rc):
    global flag_connected
    flag_connected = 1
@@ -13,8 +22,24 @@ def on_disconnect(client, userdata, rc):
    print("Disconnected from MQTT server")
    
 # a callback functions 
+sensor_list = []
+sensor_vals = 3
+count = 0
+
 def callback_esp32_sensor(client, userdata, msg):
-    print('ESP sensor data: ', msg.payload.decode('utf-8'))
+    sensor_data= msg.payload.decode('utf-8')
+    print('ESP sensor data: ',sensor_data)
+    
+    sensor_list.append(sensor_data)
+    global count
+    count += 1
+    
+    if count >= sensor_vals:
+        json_data(sensor_list)
+        sensor_list.clear()
+        count=0
+         
+
 
 def callback_rpi_broadcast(client, userdata, msg):
     print('RPi Broadcast message:  ', str(msg.payload.decode('utf-8')))
