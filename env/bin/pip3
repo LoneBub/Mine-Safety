@@ -1,4 +1,4 @@
-#!/home/mirror/mine-safety/env/bin/python3
+#!/home/arch/whatever/iot/mine-safety/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
