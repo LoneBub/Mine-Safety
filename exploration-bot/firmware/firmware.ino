@@ -1,14 +1,15 @@
-//Viral Science www.youtube.com/c/viralscience  www.viralsciencecreativity.com
-//ESP32 Camera Surveillance Car
-
 #include "esp_camera.h"
 #include <WiFi.h>
+
+IPAddress local_IP(192,168,4,3);
+IPAddress subnet(255,255,255,0);
 
 //
 // WARNING!!! Make sure that you have either selec ted ESP32 Wrover Module,
 //            or another board which has PSRAM enabled
 //
 // Adafruit ESP32 Feather
+
 
 // Select camera model
 //#define CAMERA_MODEL_WROVER_KIT
@@ -117,8 +118,8 @@ void setup() {
   //  config.jpeg_quality = 10;
   //  config.fb_count = 2;
   //} else {
-    config.frame_size = FRAMESIZE_SVGA;
-    config.jpeg_quality = 12;
+    config.frame_size = FRAMESIZE_QVGA;
+    config.jpeg_quality = 40;
     config.fb_count = 1;
   //}
 
@@ -131,7 +132,7 @@ void setup() {
 
   //drop down frame size for higher initial frame rate
   sensor_t * s = esp_camera_sensor_get();
-  s->set_framesize(s, FRAMESIZE_CIF);
+  s->set_framesize(s, FRAMESIZE_QVGA);
 
   WiFi.begin(ssid, password);
 

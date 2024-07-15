@@ -12,7 +12,7 @@ const char* wifi_network_password =  "isuq5478";
 
 void setup()
 {
-  WiFi.mode(WIFI_MODE_APSTA);
+ // WiFi.mode(WIFI_MODE_APSTA);
 
   Serial.begin(115200);
 
@@ -21,7 +21,7 @@ void setup()
   
   Serial.print("Setting modes ... ");
   WiFi.softAP(soft_ap_ssid, soft_ap_password);
-  WiFi.begin(wifi_network_ssid, wifi_network_password);
+//  WiFi.begin(wifi_network_ssid, wifi_network_password);
   //WiFi.softAP(ssid);
   //WiFi.softAP(ssid, passphrase, channel, ssdi_hidden, max_connection)
 }
@@ -30,8 +30,8 @@ void loop() {
   Serial.print("ESP32 IP as soft AP: ");
   Serial.println(WiFi.softAPIP());
  
-  Serial.print("ESP32 IP on the WiFi network: "); 
-  Serial.println(WiFi.localIP());
+ // Serial.print("ESP32 IP on the WiFi network: "); 
+ // Serial.println(WiFi.localIP());
   delay(5000);  
 
 }
