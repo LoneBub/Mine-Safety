@@ -7,17 +7,18 @@
 // Define DHT sensor type and pin
 #define DHTPIN A13      // D15 pin connected to the DHT sensor
 #define DHTTYPE DHT11 // DHT11 sensor
-#define MQ2_PIN 14
+#define MQ2_PIN A14
 
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
 
 // Replace the SSID/Password details as per your wifi router
-const char* ssid = "Modify";
-const char* password = "isuq5478";
+const char* ssid = "ESP32";
+const char* password = "";
 
 // Replace your MQ vTT Broker IP address here:
-const char* mqtt_server = ("192.168.177.86");
+const char* mqtt_server = ("192.168.4.3");
+const int mqttPort = 1883;
 
 
 // Initializing ESP client
@@ -128,11 +129,14 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   Serial.begin(115200);
   delay(1000);
-  
+
+  WiFi.mode(WIFI_STA);
+
   dht.begin();
 
   setup_wifi();
-  client.setServer(mqtt_server,1883);//1883 is the default port for MQTT server
+  
+  client.setServer(mqtt_server,mqttPort);//1883 is the default port for MQTT server
   client.setCallback(callback);
 
   pinMode(MQ2_PIN, INPUT);
@@ -151,10 +155,10 @@ void loop() {
   int mq2_val = digitalRead(MQ2_PIN);
 
   if (mq2_val == HIGH){
-    Serial.println("The gas is NOT present");
+    Serial.println("The gas is present");
   }
   else{
-    Serial.println("The gas is present");
+    Serial.println("The gas is NOT present");
   }
 
 // DHT sensor reading
@@ -189,9 +193,9 @@ void loop() {
     char buffer3[10];  
     itoa(mq2_val,buffer3,10);
 
-    client.publish("esp32/sensor1", buffer1);
-    client.publish("esp32/sensor1", buffer2);
-    client.publish("esp32/sensor2", buffer3);
+    client.publish("esp32/sensor/sentry", buffer1);
+    client.publish("esp32/sensor/sentry", buffer2);
+    client.publish("esp32/sensor/sentry", buffer3);
   }
  
 }
