@@ -1,0 +1,143 @@
+<!-- dashboard -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mine Safety</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      h1 {
+        text-decoration: underline;
+        color: rgb(97, 61, 174);
+      }
+      .top {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+        height: 70px;
+        box-shadow: 0px 15px 8px -17px #7b7070;
+      }
+      .logo {
+        height: 70px;
+        width: 88px;
+        margin-right: 3px;
+      }
+      .side {
+        height: 100vh;
+        width: 250px;
+      }
+      .nav {
+        list-style-type: none;
+        padding: 0;
+        width: 100%;
+        margin-top: 0px;
+      }
+      .navitem a {
+        text-decoration: none;
+        color: black;
+      }
+      .navitem {
+        height: 71px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 25px;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .navitem:hover {
+        background-color: rgb(97, 61, 174);
+      }
+      .navitem:hover a {
+        color: white;
+      }
+      .navitem a i {
+        margin-right: 22px;
+      }
+      .right {
+        background-color: rgb(196, 196, 245);
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <img src="logo.jpeg" class="logo" />
+      <h1>Mine Safety: Controlling and Monitoring</h1>
+      <img src="images.png" class="logo" />
+    </div>
+    <div class="container">
+      <div class="side">
+        <ul class="nav">
+          <li class="navitem">
+            <a href="#"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+          </li>
+          <li class="navitem">
+            <a id="rover" href="#"><i class="fa-solid fa-caravan"></i>Rover</a>
+          </li>
+          <li class="navitem">
+            <a id="tower" href="#"
+              ><i class="fa-solid fa-tower-observation"></i>Sentry</a
+            >
+          </li>
+          <li class="navitem">
+            <a id="helmet" href="#"
+              ><i class="fa-solid fa-helmet-safety"></i>Helmet</a
+            >
+          </li>
+          <li class="navitem">
+            <a href="#"><i class="fa-solid fa-user-pen"></i>Profile</a>
+          </li>
+          <li class="navitem">
+            <a id="logout" href="#"
+              ><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="right">
+        <header></header>
+      </div>
+    </div>
+    <script>
+      let l = document.getElementById("logout");
+      let p = document.getElementById("rover");
+      let q = document.getElementById("tower");
+      let r = document.getElementById("helmet");
+      l.addEventListener("click", () => {
+        window.location.assign("login.html");
+      });
+      p.addEventListener("click", () => {
+        window.location.assign("bot.html");
+      });
+      q.addEventListener("click", () => {
+        window.location.assign("tower.html");
+      });
+      r.addEventListener("click", () => {
+        window.location.assign("helmet.html");
+      });
+    </script>
+  </body>
+</html>
