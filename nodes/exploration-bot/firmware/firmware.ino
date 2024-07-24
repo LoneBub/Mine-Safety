@@ -16,8 +16,8 @@ IPAddress subnet(255,255,255,0);
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char* ssid = "ESP32";   //Enter SSID WIFI Name
-const char* password = "";   //Enter WIFI Password
+const char* ssid = "tp-link";   //Enter SSID WIFI Name
+const char* password = "PITC'2023";   //Enter WIFI Password
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM    -1
@@ -112,11 +112,11 @@ void setup() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
+  config.pixel_format = PIXFORMAT_GRAYSCALE;//PIXFORMAT_JPEG;
   //init with high specs to pre-allocate larger buffers
   if(psramFound()){
     config.frame_size = FRAMESIZE_UXGA;
-    config.jpeg_quality = 10;
+    config.jpeg_quality = 40;
     config.fb_count = 2;
   } else {
     config.frame_size = FRAMESIZE_QVGA;
@@ -131,13 +131,12 @@ void setup() {
     return;
   }
 
-  //drop down frame size for higher initial frame rate
+// change cam config 
   sensor_t * s = esp_camera_sensor_get();
-  s->set_framesize(s, FRAMESIZE_QVGA);
-  
   int xclk = 8;
-  s->set_xclk(s, LEDC_TIMER_0, xclk);
 
+  s->set_framesize(s, FRAMESIZE_QVGA);
+  //s->set_xclk(s, LEDC_TIMER_0, xclk);
 
   WiFi.begin(ssid, password);
 
@@ -157,6 +156,4 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
 }

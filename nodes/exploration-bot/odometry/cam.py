@@ -157,8 +157,8 @@ def estimate_motion(kp1, kp2, matches):
     return R, t
 
 # Initialize the stream
-base_url = 'http://192.168.1.8:81'
-response = requests.get(base_url + "/stream", stream=True)
+base_url = 'http://192.168.0.106'
+response = requests.get(base_url + "/cam-lo.jpg", stream=True)
 buffer = bytes()
 previous_frame = None
 trajectory = np.zeros((400, 400, 3), dtype=np.uint8)
@@ -182,18 +182,11 @@ def update_trajectory_window(current_pos, trajectory, origin):
 
 origin = (trajectory.shape[1] // 2, trajectory.shape[0] // 2)
 
-for chunk in response.iter_content(chunk_size=2048):
-    buffer += chunk
-    a = buffer.find(b'\xff\xd8')
-    b = buffer.find(b'\xff\xd9')
+while True:
+        imgResp=urlopen(url)
+        imgNp=np.array(bytearray(imgResp.read()),dtype=np.uint8)
+        frame=cv2.imdecode(imgNp,-1)
 
-    if a != -1 and b != -1:
-        jpg = buffer[a:b + 2]
-        buffer = buffer[b + 2:]
-        
-        if jpg:
-            frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
-            
             if frame is not None:
                 frame = cv2.flip(frame, 0)
                 

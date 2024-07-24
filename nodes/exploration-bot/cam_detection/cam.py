@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import requests
 
-base_url = 'http://192.168.4.23:81'
+base_url = 'http://192.168.0.106:81'
 
 response = requests.get(base_url+"/stream", stream=True)
 buffer = bytes()
