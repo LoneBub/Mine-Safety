@@ -1,2 +1,3 @@
 env
 mqtt-broker/*.json
+Dashboard/node_modules
