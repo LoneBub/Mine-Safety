@@ -72,6 +72,7 @@ extern String WiFiAddr ="";
 
 void startCameraServer();
 
+
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
@@ -113,15 +114,15 @@ void setup() {
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
   //init with high specs to pre-allocate larger buffers
-  //if(psramFound()){
-  //  config.frame_size = FRAMESIZE_UXGA;
-  //  config.jpeg_quality = 10;
-  //  config.fb_count = 2;
-  //} else {
+  if(psramFound()){
+    config.frame_size = FRAMESIZE_UXGA;
+    config.jpeg_quality = 10;
+    config.fb_count = 2;
+  } else {
     config.frame_size = FRAMESIZE_QVGA;
     config.jpeg_quality = 40;
     config.fb_count = 1;
-  //}
+  }
 
   // camera init
   esp_err_t err = esp_camera_init(&config);
@@ -133,6 +134,10 @@ void setup() {
   //drop down frame size for higher initial frame rate
   sensor_t * s = esp_camera_sensor_get();
   s->set_framesize(s, FRAMESIZE_QVGA);
+  
+  int xclk = 8;
+  s->set_xclk(s, LEDC_TIMER_0, xclk);
+
 
   WiFi.begin(ssid, password);
 
