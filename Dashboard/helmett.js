@@ -1,115 +1,138 @@
-// Data arrays to hold the fetched values
-var tempData = [0];
-var humidityData = [0];
-var angleData = [0];
+// Initialize empty arrays for data and labels
+var tempData = [];
+var humidityData = [];
+var angleData = [];
+var labels = [];
 
-// Function to add data points and manage data length
-function addDataPoint(TD, HD, AD) {
-  tempData.push(TD);
-  humidityData.push(HD);
-  angleData.push(AD);
-  if (tempData.length > 5) {
-    tempData.shift();
-  }
-  if (humidityData.length > 5) {
-    humidityData.shift();
-  }
-  if (angleData.length > 5) {
-    angleData.shift();
-  }
-}
+// Function to add data points to arrays
+function addDataPoint(temp, humidity, angle) {
+    var now = new Date().toLocaleTimeString();
+    labels.push(now);
+    tempData.push(temp);
+    humidityData.push(humidity);
+    angleData.push(angle);
 
-// Function to fetch data and update the chart
-async function fetchData() {
-  try {
-    let response = await fetch("http://localhost:8000/data1.json");
-    if (response.ok) {
-      let jsonData = await response.json();
-      let temp = jsonData.Temp;
-      let humidity = jsonData.Humidity;
-      let angle = jsonData.angle;
-      addDataPoint(temp, humidity, angle);
-
-      const now = new Date();
-      const timeLabel = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
-      data.labels.push(timeLabel);
-      data.datasets[0].data.push(temp);
-      data.datasets[1].data.push(humidity);
-      data.datasets[2].data.push(angle);
-
-      // Update chart data
-      if (data.labels.length >= 5) {
-        data.labels.shift();
-        data.datasets[0].data.shift();
-        data.datasets[1].data.shift();
-        data.datasets[2].data.shift();
-      }
-
-      // Update the chart with new data
-      myChart.update();
-      console.log("temperature : ", tempdata);
-      console.log("humidity : ", humiditydata);
-      console.log("angle : ", angledata);
-    } else {
-      console.error("Network response was not ok.");
+    // Keep only the last 5 records
+    if (labels.length > 5) {
+        labels.shift();
+        tempData.shift();
+        humidityData.shift();
+        angleData.shift();
     }
-  } catch (error) {
-    console.error("Fetch error:", error);
-  }
 }
 
-// Initial chart data and configuration
-const data = {
-  labels: [], // Start with an empty array for labels
-  datasets: [
-    {
-      label: "Temp",
-      backgroundColor: "rgba(255, 99, 132, 0.2)",
-      borderColor: "rgba(255, 99, 132, 1)",
-      borderWidth: 1,
-      data: [], // Start with an empty array for data
-      fill: false,
-    },
-    {
-      label: "Humidity",
-      backgroundColor: "rgba(54, 162, 235, 0.2)",
-      borderColor: "rgba(54, 162, 235, 1)",
-      borderWidth: 1,
-      data: [], // Start with an empty array for data
-      fill: false,
-    },
-    {
-      label: "Angle",
-      backgroundColor: "rgba(75, 192, 192, 0.2)",
-      borderColor: "rgba(75, 192, 192, 1)",
-      borderWidth: 1,
-      data: [], // Start with an empty array for data
-      fill: false,
-    },
-  ],
-};
+// Function to fetch data from JSON and update the charts
+async function fetchData() {
+    try {
+        let response = await fetch('http://localhost:8000/data.json');
+        if (response.ok) {
+            let jsonData = await response.json();
+            var temp = jsonData.Temp;
+            var humidity = jsonData.Humidity;
+            var angle = jsonData.angle;
+            addDataPoint(temp, humidity, angle);
 
-// Chart configuration
-const config = {
-  type: "line",
-  data: data,
-  options: {
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  },
-};
+            // Update the charts with new data
+            tempChart.data.labels = labels;
+            tempChart.data.datasets[0].data = tempData;
+            tempChart.update();
 
-// Create the chart (only once)
-const myChart = new Chart(
-  document.getElementById("myChart").getContext("2d"),
-  config
-);
+            humidityChart.data.labels = labels;
+            humidityChart.data.datasets[0].data = humidityData;
+            humidityChart.update();
+
+            angleChart.data.labels = labels;
+            angleChart.data.datasets[0].data = angleData;
+            angleChart.update();
+
+            // Update the current values below the charts
+            document.getElementById('tempValue').textContent = `Current Temperature: ${temp}°C`;
+            document.getElementById('humidityValue').textContent = `Current Humidity: ${humidity}%`;
+            document.getElementById('angleValue').textContent = `Current Angle: ${angle}°`;
+        } else {
+            console.error('Network response was not ok.');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+}
+
+// Initialize charts
+const tempCtx = document.getElementById('tempChart').getContext('2d');
+const tempChart = new Chart(tempCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Temperature',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+            data: [],
+            fill: false
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                min: 0
+            }
+        }
+    }
+});
+
+const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+const humidityChart = new Chart(humidityCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Humidity',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            data: [],
+            fill: false
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                min: 0
+            }
+        }
+    }
+});
+
+const angleCtx = document.getElementById('angleChart').getContext('2d');
+const angleChart = new Chart(angleCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Angle',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            data: [],
+            fill: false
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                min: 0
+            }
+        }
+    }
+});
 
 // Fetch data initially and then every 2 seconds
 fetchData();
-window.setInterval(fetchData, 2000);
+setInterval(fetchData, 2000);
