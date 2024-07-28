@@ -302,7 +302,7 @@ void startCameraServer(){
 
     ra_filter_init(&ra_filter, 20);
     Serial.printf("Starting web server on port: '%d'", config.server_port);
-    if (httpd_start(&camera_httpd, &config) == ESP_OK) {
+  //  if (httpd_start(&camera_httpd, &config) == ESP_OK) {
         httpd_register_uri_handler(camera_httpd, &index_uri);
         httpd_register_uri_handler(camera_httpd, &go_uri); 
         httpd_register_uri_handler(camera_httpd, &back_uri); 
@@ -311,7 +311,7 @@ void startCameraServer(){
         httpd_register_uri_handler(camera_httpd, &right_uri);
         httpd_register_uri_handler(camera_httpd, &ledon_uri);
         httpd_register_uri_handler(camera_httpd, &ledoff_uri);
-    }
+  //  }
 
     config.server_port += 1;
     config.ctrl_port += 1;

@@ -16,8 +16,8 @@ IPAddress subnet(255,255,255,0);
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char* ssid = "tp-link";   //Enter SSID WIFI Name
-const char* password = "PITC'2023";   //Enter WIFI Password
+const char* ssid = "OnePlus Ce3";   //Enter SSID WIFI Name
+const char* password = "manjutomar";   //Enter WIFI Password
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM    -1
@@ -136,8 +136,12 @@ void setup() {
   int xclk = 8;
 
   s->set_framesize(s, FRAMESIZE_QVGA);
+  s->set_vflip(s, 1);
+  s->set_hmirror(s, 1);
+
   //s->set_xclk(s, LEDC_TIMER_0, xclk);
 
+////////////////////////////////////  END CAM CONFIG  ////////////////////////////////////
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -157,3 +161,4 @@ void setup() {
 
 void loop() {
 }
+
