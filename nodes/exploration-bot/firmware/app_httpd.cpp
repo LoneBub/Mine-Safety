@@ -299,7 +299,6 @@ void startCameraServer(){
         .user_ctx  = NULL
     };
 
-
     ra_filter_init(&ra_filter, 20);
     Serial.printf("Starting web server on port: '%d'", config.server_port);
   //  if (httpd_start(&camera_httpd, &config) == ESP_OK) {

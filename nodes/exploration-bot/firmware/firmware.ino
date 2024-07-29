@@ -1,23 +1,38 @@
 #include "esp_camera.h"
 #include <WiFi.h>
+#include <PubSubClient.h>
+#include <DHT.h>
+#include <DHT_U.h>
 
 IPAddress local_IP(192,168,4,3);
 IPAddress subnet(255,255,255,0);
 
-//
-// WARNING!!! Make sure that you have either selec ted ESP32 Wrover Module,
-//            or another board which has PSRAM enabled
-//
-// Adafruit ESP32 Feather
+WiFiClient espClient;
 
+// Define DHT sensor type and pin
+#define DHTPIN A13      // D15 pin connected to the DHT sensor
+#define DHTTYPE DHT11 // DHT11 sensor
+#define MQ2_PIN A14
+
+DHT dht(DHTPIN, DHTTYPE);
+
+const char* mqtt_server = ("192.168.4.7");
+const int mqttPort = 1883;
+
+PubSubClient client(espClient);
 
 // Select camera model
 //#define CAMERA_MODEL_WROVER_KIT
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
+<<<<<<< Updated upstream
 const char* ssid = "OnePlus Ce3";   //Enter SSID WIFI Name
 const char* password = "manjutomar";   //Enter WIFI Password
+=======
+const char* ssid = "Mine-Net";   //Enter SSID WIFI Name
+const char* password = "";   //Enter WIFI Password
+>>>>>>> Stashed changes
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM    -1
@@ -78,7 +93,6 @@ void setup() {
   Serial.setDebugOutput(true);
   Serial.println();
 
-
   pinMode(gpLb, OUTPUT); //Left Backward
   pinMode(gpLf, OUTPUT); //Left Forward
   pinMode(gpRb, OUTPUT); //Right Forward
@@ -91,6 +105,8 @@ void setup() {
   digitalWrite(gpRb, LOW);
   digitalWrite(gpRf, LOW);
   digitalWrite(gpLed, LOW);
+
+/////////////////// MOTOR DRIVER ENDS  /////////////////////////////
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -116,7 +132,7 @@ void setup() {
   //init with high specs to pre-allocate larger buffers
   if(psramFound()){
     config.frame_size = FRAMESIZE_UXGA;
-    config.jpeg_quality = 40;
+    config.jpeg_quality = 10;
     config.fb_count = 2;
   } else {
     config.frame_size = FRAMESIZE_QVGA;
@@ -133,7 +149,6 @@ void setup() {
 
 // change cam config 
   sensor_t * s = esp_camera_sensor_get();
-  int xclk = 8;
 
   s->set_framesize(s, FRAMESIZE_QVGA);
   s->set_vflip(s, 1);
@@ -141,7 +156,28 @@ void setup() {
 
   //s->set_xclk(s, LEDC_TIMER_0, xclk);
 
+<<<<<<< Updated upstream
 ////////////////////////////////////  END CAM CONFIG  ////////////////////////////////////
+=======
+//////////////////  CAMERA CONFIG ENDS  /////////////////////////////
+#IFDEF SENSORS
+  pinMode(ledPin, OUTPUT);
+  pinMode(MQ2_PIN, INPUT);
+  Serial.begin(115200);
+  delay(1000);
+
+  dht.begin();
+  client.setServer(mqtt_server,mqttPort);//1883 is the default port for MQTT server
+  client.setCallback(callback);
+#ENDIF
+/////////////////////// SENSOR NODE ENDS ///////////////////////////
+
+  if(!WiFi.config(local_ip, subnet)) {
+    Serial.println("Failed to configure Static IP");
+  } else {
+  Serial.println("Static IP configured!");
+  }
+>>>>>>> Stashed changes
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -157,6 +193,7 @@ void setup() {
   Serial.print(WiFi.localIP());
   WiFiAddr = WiFi.localIP().toString();
   Serial.println("' to connect");
+
 }
 
 void loop() {
