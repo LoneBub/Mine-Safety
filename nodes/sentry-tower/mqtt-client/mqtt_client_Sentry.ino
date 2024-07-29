@@ -1,24 +1,26 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include "Adafruit_Sensor.h"
 #include <DHT.h>
 #include <DHT_U.h>
+#include <string>
 
 // Define DHT sensor type and pin
 #define DHTPIN A13      // D15 pin connected to the DHT sensor
 #define DHTTYPE DHT11 // DHT11 sensor
-#define MQ2_PIN A14
+#define MQ2_PIN A14 //D13
 
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
 
 // Replace the SSID/Password details as per your wifi router
-const char* ssid = "ESP32";
+const char* ssid = "Mine-Net";
 const char* password = "";
 
 // Replace your MQ vTT Broker IP address here:
-const char* mqtt_server = ("192.168.4.3");
+const char* mqtt_server = ("192.168.4.102");
 const int mqttPort = 1883;
+
+char* sig1;
 
 
 // Initializing ESP client
@@ -39,6 +41,8 @@ void blink_led(unsigned int times, unsigned int duration)
     delay(200);
   }
 }
+
+                                                                                                               
 
 void setup_wifi() {
   delay(50);
@@ -75,7 +79,6 @@ void connect_mqttServer() {
           //if not connected, then first connect to wifi
           setup_wifi();
         }
-
         //now attemt to connect to MQTT server
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
@@ -149,16 +152,27 @@ void setup() {
 
 void loop() {
 
-  delay(2000);
+  delay(1000);
+  if (!client.connected()) {
+    connect_mqttServer();
+  }
 
+  client.loop();
+
+  
 // MQ-2 sensor reading
   int mq2_val = digitalRead(MQ2_PIN);
 
   if (mq2_val == HIGH){
-    Serial.println("The gas is present");
+    Serial.println("The gas is NOT present");
+    sig1 = "GAS is NOT Present";
+    Serial.println(sizeof(sig1));
+
+
   }
   else{
-    Serial.println("The gas is NOT present");
+    Serial.println("The gas is present");
+    sig1 = "GAS is Present";
   }
 
 // DHT sensor reading
@@ -173,12 +187,7 @@ void loop() {
     return;
   }
   
-  delay(1000);
-  if (!client.connected()) {
-    connect_mqttServer();
-  }
-
-  client.loop();
+  delay(100);
   
   long now = millis();
   if (now - lastMsg > 4000) {
@@ -193,9 +202,13 @@ void loop() {
     char buffer3[10];  
     itoa(mq2_val,buffer3,10);
 
+    char buffer4[500]; 
+    memcpy(buffer4, sig1,(size_t)sizeof(sig1)* strlen(sig1));
+
     client.publish("esp32/sensor/sentry", buffer1);
     client.publish("esp32/sensor/sentry", buffer2);
     client.publish("esp32/sensor/sentry", buffer3);
+    client.publish("esp32/sensor/sentry", buffer4);
   }
  
 }
