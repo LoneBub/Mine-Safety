@@ -1,5 +1,8 @@
-#IFNDEF SENSORS
-#DEFINE SENSORS
+#ifdef SENSORS
+
+const char* mqtt_server = ("192.168.4.7");
+const int mqttPort = 1883;
+
 
 void connect_mqttServer() {
   // Loop until we're reconnected
@@ -55,10 +58,10 @@ void callback(char* topic, byte* message, unsigned int length) {
 }
 
 
-void setup() {
+void node_setup() {
 }
   
-void loop() {
+void node_loop() {
 
   delay(2000);
 
@@ -110,5 +113,5 @@ void loop() {
   }
  
 }
-#ENDIF
   
+#endif
