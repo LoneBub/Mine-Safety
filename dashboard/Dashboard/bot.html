@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Helmet</title>
+  </head>
+  <body>
+    <h1>exploration bot Readings</h1>
+    <div id="data"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("data3.json")
+          .then((response) => response.json())
+          .then((data) => {
+            const sensorDataDiv = document.getElementById("data");
+            sensorDataDiv.innerHTML = `
+                        <p>Temperature: ${data.temperature}°C</p>
+                        <p>Humidity: ${data.humidity}%</p>
+                        <p>Pressure: ${data.pressure} hPa</p>
+                    `;
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
