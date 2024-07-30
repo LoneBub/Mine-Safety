@@ -156,9 +156,6 @@ void setup() {
 
   //s->set_xclk(s, LEDC_TIMER_0, xclk);
 
-<<<<<<< Updated upstream
-////////////////////////////////////  END CAM CONFIG  ////////////////////////////////////
-=======
 //////////////////  CAMERA CONFIG ENDS  /////////////////////////////
 #IFDEF SENSORS
   pinMode(ledPin, OUTPUT);
@@ -177,7 +174,6 @@ void setup() {
   } else {
   Serial.println("Static IP configured!");
   }
->>>>>>> Stashed changes
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
