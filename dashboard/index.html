@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mine Safety</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        background-color: #212529;
+        color: #fff;
+      }
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 70px;
+        padding: 0 20px;
+        background-color: rgb(6, 145, 184);
+        position: sticky;
+      }
+      .logo {
+        height: 70px;
+        width: 88px;
+        margin-right: -19px;
+        margin-left: -20px;
+      }
+      .side {
+        height: 100vh;
+        width: 250px;
+        background-color: #2a2d3b;
+        padding-top: 20px;
+      }
+      .nav {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      .navitem {
+        height: 60px;
+        display: flex;
+        align-items: center;
+
+        font-size: 18px;
+        cursor: pointer;
+        margin: 10px;
+        border-radius: 6px;
+      }
+      .navitem a {
+        text-decoration: none;
+        color: #fff;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+      }
+      .navitem:hover,
+      .navitem.active {
+        background-color: #495057;
+      }
+
+      .navitem a i {
+        margin-right: 10px;
+      }
+      .right {
+        background-color: #212529;
+        width: 100%;
+        padding: 20px;
+        overflow-y: auto;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      .right h2,
+      .right h3,
+      .right p,
+      .right ol,
+      .right ul {
+        color: #fff;
+      }
+      iframe {
+        width: 100%;
+        height: calc(100% - 20px);
+        border: none;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <img src="logo.jpeg" class="logo" />
+      <h1>Mine Safety: Controlling and Monitoring</h1>
+      <img src="images.png" class="logo" />
+    </div>
+    <div class="container">
+      <div class="side">
+        <ul class="nav">
+          <li class="navitem">
+            <a id="dashboard" href="#"
+              ><i class="fa-solid fa-table-columns"></i>Dashboard</a
+            >
+          </li>
+          <li class="navitem">
+            <a id="rover" href="#"><i class="fa-solid fa-caravan"></i>Rover</a>
+          </li>
+          <li class="navitem">
+            <a id="tower" href="#"
+              ><i class="fa-solid fa-tower-observation"></i>Sentry</a
+            >
+          </li>
+          <li class="navitem">
+            <a id="helmet" href="#"
+              ><i class="fa-solid fa-helmet-safety"></i>Helmet</a
+            >
+          </li>
+          <li class="navitem">
+            <a id="profilee" href="#"
+              ><i class="fa-solid fa-user-pen"></i>Profile</a
+            >
+          </li>
+          <li class="navitem">
+            <a id="logout" href="#"
+              ><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="right">
+        <iframe id="contentFrame" src="" frameborder="0"></iframe>
+        <div id="head">
+          <h2>
+            Our project focuses on enhancing mine safety and control through
+            innovative technology solutions.
+          </h2>
+          <p>
+            We are developing a comprehensive system to monitor and manage the
+            conditions within mines, ensuring the safety of workers and the
+            efficiency of operations.
+          </p>
+          <h3>Key Components of Our System:</h3>
+          <ol>
+            <li>
+              <strong>Rover for Monitoring:</strong>
+              <ul>
+                <li>
+                  A mobile rover equipped with sensors and cameras to traverse
+                  the mine and collect real-time data on environmental
+                  conditions such as gas levels, temperature, humidity, and
+                  structural integrity.
+                </li>
+                <li>
+                  The rover's mobility allows it to reach areas that are
+                  otherwise difficult or dangerous for humans to access,
+                  providing crucial information for assessing potential hazards.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <strong>Stationary Monitoring Towers:</strong>
+              <ul>
+                <li>
+                  Strategically placed throughout the mine, these towers are
+                  equipped with advanced sensors to continuously monitor the
+                  mine environment 24/7.
+                </li>
+                <li>
+                  The towers provide real-time data on air quality, gas
+                  concentrations, temperature, and other critical parameters.
+                </li>
+                <li>
+                  The constant data feed from these towers ensures that any
+                  changes in the mine's conditions are immediately detected and
+                  addressed.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <strong>Smart Helmet for Workers:</strong>
+              <ul>
+                <li>
+                  A cutting-edge smart helmet designed to enhance worker safety
+                  by monitoring their movements.
+                </li>
+                <li>
+                  The helmet is equipped with a motion sensor that detects
+                  immediate movements, which could indicate accidents or sudden
+                  health issues.
+                </li>
+                <li>
+                  In the event of an incident involving abrupt movement, the
+                  helmet automatically alerts the authorities, triggering an
+                  emergency response.
+                </li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let l = document.getElementById("logout");
+        let p = document.getElementById("rover");
+        let q = document.getElementById("tower");
+        let r = document.getElementById("helmet");
+        let s = document.getElementById("head");
+        let u = document.getElementById("dashboard");
+        let t = document.getElementById("profilee");
+
+        function activateNavItem(activeItem) {
+          // Remove 'active' class from all nav items
+          document
+            .querySelectorAll(".navitem")
+            .forEach((item) => item.classList.remove("active"));
+
+          // Add 'active' class to the clicked nav item
+          activeItem.classList.add("active");
+        }
+
+        p.addEventListener("click", (e) => {
+          e.preventDefault();
+          activateNavItem(p.parentElement);
+          document.getElementById("contentFrame").style.display = "block";
+          s.style.display = "none";
+          document.getElementById("contentFrame").src = "live_cam.html";
+        });
+
+        u.addEventListener("click", (e) => {
+          e.preventDefault();
+          activateNavItem(u.parentElement);
+          document.getElementById("contentFrame").style.display = "block";
+          s.style.display = "none";
+          document.getElementById("contentFrame").src = "f.html";
+        });
+
+        q.addEventListener("click", (e) => {
+          e.preventDefault();
+          activateNavItem(q.parentElement);
+          document.getElementById("contentFrame").style.display = "block";
+          s.style.display = "none";
+          document.getElementById("contentFrame").src = "tower.html";
+        });
+
+        r.addEventListener("click", (e) => {
+          e.preventDefault();
+          activateNavItem(r.parentElement);
+          document.getElementById("contentFrame").style.display = "block";
+          s.style.display = "none";
+          document.getElementById("contentFrame").src = "helmet.html";
+        });
+
+        t.addEventListener("click", (e) => {
+          e.preventDefault();
+          activateNavItem(t.parentElement);
+          document.getElementById("contentFrame").style.display = "block";
+          s.style.display = "none";
+          document.getElementById("contentFrame").src = "profile.html";
+        });
+
+        l.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.location.href = "login.html"; // Assuming logout should redirect to login
+        });
+
+        // Trigger the click event on the dashboard button to display it by default
+        u.click();
+      });
+    </script>
+  </body>
+</html>

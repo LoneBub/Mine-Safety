@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Layout with Shadows</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #212529;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(3, 150px);
+        grid-template-rows: repeat(3, 150px);
+        gap: 70px;
+        justify-content: center;
+        padding-bottom: 17px;
+      }
+
+      .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #212529;
+        background-image: url("pro.jpeg");
+
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        border-radius: 10px;
+        font-size: 18px;
+        color: #333;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+
+      .box:hover {
+        transform: scale(1.6);
+      }
+
+      .box:hover .info {
+        opacity: 1;
+        bottom: 10px;
+      }
+
+      .info {
+        position: absolute;
+        bottom: -30px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px;
+        text-align: center;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s ease, bottom 0.3s ease;
+      }
+
+      #box1 {
+        background-image: url("pro1.png");
+      }
+
+      #box2 {
+        background-image: url("pro1.png");
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box">
+        <div class="info">
+          Lokesh Singh
+          <div class="clg">BPIT</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="info">
+          Yatharth Jain
+          <div class="clg">BPIT</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="info">
+          Naman Jain
+          <div class="clg">BPIT</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="info">
+          Aditya Sharma
+          <div class="clg">BPIT</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="info">
+          Aryan Tomar
+          <div class="clg">MSIT</div>
+        </div>
+      </div>
+      <div class="box" id="box2">
+        <div class="info">
+          Saloni
+          <div class="clg">MSIT</div>
+        </div>
+      </div>
+      <div class="box" id="box1">
+        <div class="info">
+          Diksha Gupta
+          <div class="clg">BMIET</div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="info">
+          Sahil Gosain
+          <div class="clg">USAR</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="info">
+          Rahul Kumar
+          <div class="clg">USAR</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

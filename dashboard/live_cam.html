@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESP32-CAM Live Stream</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+      #stream {
+        width: 640px;
+        height: 480px;
+        box-shadow: rgba(0, 0, 0, 105.35) 0px 5px 15px;
+        border-radius: 10px;
+        transform: rotate(180deg);
+        margin-right: 20px;
+      }
+      #mainn {
+        display: flex;
+        justify-content: center;
+      }
+      #charts {
+        margin-left: 20px;
+      }
+      .chart-container {
+        width: 400px;
+        height: 300px;
+        margin-bottom: 20px;
+      }
+      #tempChart {
+        display: block;
+        box-sizing: border-box;
+        height: 100px;
+        width: 406px;
+        box-shadow: rgba(0, 0, 0, 105.35) 0px 5px 15px;
+      }
+      #humidityChart {
+        display: block;
+        box-sizing: border-box;
+        height: 100px;
+        width: 406px;
+        box-shadow: rgba(0, 0, 0, 105.35) 0px 5px 15px;
+        padding-bottom: 22px;
+      }
+      #currentValues {
+        color: white;
+        box-shadow: rgba(0, 0, 0, 105.35) 0px 5px 15px;
+        height: 80px;
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 10px;
+        width: 550px;
+        margin-left: 41px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mainn">
+      <div id="left">
+        <img id="stream" src="" alt="ESP32-CAM Stream" />
+        <div id="currentValues">
+          <p id="tempValue">Current Temperature: --°C</p>
+          <p id="humidityValue">Current Humidity: --%</p>
+        </div>
+      </div>
+      <div id="right">
+        <div id="charts">
+          <div class="chart-container">
+            <canvas id="tempChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="humidityChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="robot.js"></script>
+    <script>
+      const streamElement = document.getElementById("stream");
+      const esp32Ip = "http://192.168.4.119:81"; // ESP32-CAM IP address
+      streamElement.src = `${esp32Ip}/stream`;
+    </script>
+  </body>
+</html>
