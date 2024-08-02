@@ -1,4 +1,4 @@
-// Initialize arrays for data and labels with the first 20 readings
+//helmett.js
 var tempData = [
   30, 32, 31, 33, 34, 35, 36, 37, 35, 34, 32, 30, 31, 29, 28, 27, 26, 25, 24,
   23,
@@ -11,17 +11,27 @@ var angleData = [
   40, 42, 41, 43, 44, 45, 46, 47, 45, 44, 42, 40, 41, 39, 38, 37, 36, 35, 34,
   33,
 ];
+var yData = [
+  50, 52, 51, 53, 54, 55, 56, 57, 55, 54, 52, 50, 51, 49, 48, 47, 46, 45, 44,
+  43,
+];
+var zData = [
+  30, 32, 31, 33, 34, 35, 36, 37, 35, 34, 32, 30, 31, 29, 28, 27, 26, 25, 24,
+  23,
+];
 var labels = Array.from({ length: 20 }, (_, i) =>
   new Date(Date.now() - (19 - i) * 1000 * 60).toLocaleTimeString()
 );
 
 // Function to add data points to arrays
-function addDataPoint(temp, humidity, angle) {
+function addDataPoint(temp, humidity, angle, y, z) {
   var now = new Date().toLocaleTimeString();
   labels.push(now);
   tempData.push(temp);
   humidityData.push(humidity);
   angleData.push(angle);
+  yData.push(y);
+  zData.push(z);
 
   // Keep only the last 20 records
   if (labels.length > 20) {
@@ -29,6 +39,8 @@ function addDataPoint(temp, humidity, angle) {
     tempData.shift();
     humidityData.shift();
     angleData.shift();
+    yData.shift();
+    zData.shift();
   }
 }
 
@@ -41,7 +53,9 @@ async function fetchData() {
       var temp = jsonData.Temp;
       var humidity = jsonData.Humidity;
       var angle = jsonData.angle;
-      addDataPoint(temp, humidity, angle);
+      var y = jsonData.y;
+      var z = jsonData.z;
+      addDataPoint(temp, humidity, angle, y, z);
 
       // Update the charts with new data
       tempChart.data.labels = labels;
@@ -54,6 +68,8 @@ async function fetchData() {
 
       angleChart.data.labels = labels;
       angleChart.data.datasets[0].data = angleData;
+      angleChart.data.datasets[1].data = yData;
+      angleChart.data.datasets[2].data = zData;
       angleChart.update();
 
       // Update the current values below the charts
@@ -66,6 +82,8 @@ async function fetchData() {
       document.getElementById(
         "angleValue"
       ).textContent = `Current Angle: ${angle}°`;
+      document.getElementById("Y-Value").textContent = `Current y Angle: ${y}°`;
+      document.getElementById("Z-Value").textContent = `Current z Angle: ${z}°`;
     } else {
       console.error("Network response was not ok.");
     }
@@ -141,6 +159,22 @@ const angleChart = new Chart(angleCtx, {
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
         data: angleData,
+        fill: false,
+      },
+      {
+        label: "Y",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+        data: yData,
+        fill: false,
+      },
+      {
+        label: "Z",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        data: zData,
         fill: false,
       },
     ],
