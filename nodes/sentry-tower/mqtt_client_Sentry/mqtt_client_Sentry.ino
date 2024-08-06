@@ -17,7 +17,7 @@ const char* ssid = "Mine-Net";
 const char* password = "";
 
 // Replace your MQ vTT Broker IP address here:
-const char* mqtt_server = ("192.168.4.102");
+const char* mqtt_server = ("192.168.177.86");
 const int mqttPort = 1883;
 
 char* sig1;
@@ -202,7 +202,7 @@ void loop() {
     char buffer3[10];  
     itoa(mq2_val,buffer3,10);
 
-    char buffer4[500]; 
+    char buffer4[50]; 
     memcpy(buffer4, sig1,(size_t)sizeof(sig1)* strlen(sig1));
 
     client.publish("esp32/sensor/sentry", buffer1);
@@ -212,3 +212,4 @@ void loop() {
   }
  
 }
+// final Sentry
