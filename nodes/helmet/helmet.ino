@@ -1,52 +1,38 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include "Adafruit_Sensor.h"
 #include <DHT.h>
 #include <DHT_U.h>
+#include <string>
 
-// Define DHT sensor type and pin
-#define DHTPIN 14      // D15 pin connected to the DHT sensor
-#define DHTTYPE DHT11 // DHT11 sensor
-#define MQ2_PIN A14
-#define pushButton 22
+#define BUTTON_PIN 19
+#define DHTTYPE 11
+#define DHTPIN  14
+#define MQPIN   27
+#define x 33 // x_out pin of Accelerometer
+#define y 25 // y_out pin of Accelerometer
+#define z 26 // z_out pin of Accelerometer
+#define BUTTON_PIN 19
 
-#define samples 50
-#define x_out  33 /* connect x_out of ADXL to 33 of ESP board */
-#define y_out  26 /* connect y_out of ADXL to 26 of ESP board */
-#define z_out  1 /* connect z_out of ADXL to 14 of ESP board */
-// Initialize DHT sensor
-DHT dht(DHTPIN, DHTTYPE);
+long lastMsg = 0;
 
+const char* ssid = "Mine-Net";
+const char* password = "";
+const char* mqtt_server = ("192.168.4.102");
+const int mqttPort = 1883;
+const int buzz = 12;
 int xsample=0;
 int ysample=0;
 int zsample=0;
-const char* sig = "SOS";
-long start;
-
-int maxVal = 850; // max change limit
-int minVal = -850; // min change limit
-int warningButton;
-
-// Replace the SSID/Password details as per your wifi router
-const char* ssid = "MINE-AP";
-const char* password = "";
-
-// Replace your MQ vTT Broker IP address here:
-const char* mqtt_server = ("192.168.177.86");
-const int mqttPort = 1883;
-const int buzz = 5;
-
 // Initializing ESP client
 WiFiClient espClient;
 // Initializing ESP as MQTT Client
 PubSubClient client(espClient);
 
-long lastMsg = 0;
+long now = 0;
 
 #define ledPin 2
 
-void blink_led(unsigned int times, unsigned int duration)
-{
+void blink_led(unsigned int times, unsigned int duration){
   for (int i = 0; i < times; i++) {
     digitalWrite(ledPin, HIGH);
     delay(duration);
@@ -55,17 +41,22 @@ void blink_led(unsigned int times, unsigned int duration)
   }
 }
 
-                                                                                                               
-
 void setup_wifi() {
   delay(50);
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
   
+  IPAddress local_ip(192,168,4,103);
+  IPAddress gateway(192,168,4,2);
+  IPAddress subnet(255,255,255,0);
+
+  if(!WiFi.config(local_ip)){
+    Serial.println("STA Failed to configure");
+  };
+
   WiFi.begin(ssid, password);
 
-  // reset esp after 10 seconds if it is not connected to any wifi
   int c=0;
   while (WiFi.status() != WL_CONNECTED) {
     blink_led(2,200); //blink LED twice (for 200ms ON time) to indicate that wifi not connected
@@ -76,27 +67,21 @@ void setup_wifi() {
         ESP.restart(); //restart ESP after 10 seconds
     }
   }
-
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-  
 }
 
 void connect_mqttServer() {
   // Loop until we're reconnected
   while (!client.connected()) {
         //first check if connected to wifi
-        if(WiFi.status() != WL_CONNECTED){
-          //if not connected, then first connect to wifi
-          setup_wifi();
-        }
-
+        
         //now attemt to connect to MQTT server
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
-        if (client.connect("ESP32_client1")) { // Change the name of client here if multiple ESP32 are connected
+        if (client.connect("ESP32_client4")) { // Change the name of client here if multiple ESP32 are connected
           //attempt successful
           Serial.println("connected");
           // Subscribe to topics here
@@ -142,158 +127,116 @@ void callback(char* topic, byte* message, unsigned int length) {
   //Similarly add more if statements to check for other subscribed topics 
 }
 
-void setup(void) {
-  pinMode(ledPin, OUTPUT);
-  pinMode(buzz,OUTPUT); // buzzer
-  pinMode(pushButton,INPUT_PULLUP); // PUSH BUTTON
-  Serial.begin(115200);
-  delay(1000);
+// initialize dht object
+DHT dht(DHTPIN, DHTTYPE);
 
-  WiFi.mode(WIFI_STA);
+void setup(){
+
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  Serial.begin(115200);
 
   dht.begin();
 
+  WiFi.mode(WIFI_STA);
   setup_wifi();
-  
+    
   client.setServer(mqtt_server,mqttPort);//1883 is the default port for MQTT server
   client.setCallback(callback);
-
-  pinMode(MQ2_PIN, INPUT);
-
-
-  Serial.println("Warming up the MQ2 sensor");
-  //delay(20000);  // wait for the MQ2 to warm up
-
-  for(int i=0;i<samples;i++) // taking samples for calibration
-  {
-    xsample+=analogRead(x_out);
-    ysample+=analogRead(y_out);
-    zsample+=analogRead(z_out);
-  }
- 
-  xsample/=samples; // taking avg for x
-  ysample/=samples; // taking avg for y
-  zsample/=samples; // taking avg for z
- 
-  delay(3000);
 }
-
-
-void loop() {
-  
-  delay(1000);
-  if (!client.connected()) {
+ 
+void loop(){
+ if (!client.connected()) {
     connect_mqttServer();
   }
-
   client.loop();
 
-  delay(2000);
-
-// MQ-2 sensor reading
-  int mq2_val = digitalRead(MQ2_PIN);
-
-  if (mq2_val == HIGH){
-    Serial.println("The gas is present");
-  }
-  else{
-    Serial.println("The gas is NOT present");
-  }
-
-// DHT sensor reading
-  float dht_humidity = dht.readHumidity();
-  float dht_temp = dht.readTemperature();
-
-  delay(1000);
- 
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(dht_humidity) || isnan(dht_temp)) {
-    Serial.println("Failed to read from DHT sensor!");
-    return;
-  
-
-  }
-  int value1 , value2 , value3; 
-  int fall_flag = 0;
-
-  value1 = analogRead(x_out); /* Digital value of voltage on x_out pin */ 
-  value2 = analogRead(y_out); /* Digital value of voltage on y_out pin */ 
-  value3 = analogRead(z_out); /* Digital value of voltage on z_out pin */ 
- 
+// STRING
+  char * sig2 = "SOS";
+  char *message;
+  int value1=analogRead(x); // reading x out
+  int value2=analogRead(y); //reading y out
+  int value3=analogRead(z); //reading z out
+  int buttonState = digitalRead(BUTTON_PIN); 
   int xValue=xsample-value1; // finding change in x
   int yValue=ysample-value2; // finding change in y
   int zValue=zsample-value3; // finding change in z
-
-  float temp = dht.readTemperature();
-  float humidity = dht.readHumidity();
-
-  int gasState = digitalRead(MQ2_PIN);
-  warningButton = digitalRead(pushButton);
-
+  int randnum = random(200,400);
+  int randnum1 = random(300,350);
+  int gas_detected = digitalRead(MQPIN);
   
-  if(gasState == LOW) {
-    tone(buzz, 1000);  // 1000 Hz frequency
-    //Send MQTT info for Gas presence
+
+
+  Serial.println(gas_detected);
+  Serial.print(xValue);
+  Serial.print("\t");
+  Serial.print(randnum);
+  Serial.print("\t");
+  Serial.print(randnum1);
+  Serial.print("\t");
+  Serial.println();
+  Serial.println(buttonState);
+  Serial.print("\n");
+  delay(1000);
+
+// DHT11 
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  if (isnan(h) || isnan(t)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
   }
-   
-  /* yaha tak humne x y aur z ki deviation value nikal li h , ab agar 1000 ya -1000 cross karega toh alert karna 
-  h ki worker gir gaya h 
-  */
 
-  /* yaha pe alert karna h , LED jalani h aur Buzzer on karna h , reset button ki functionalty banani h */
-  if(xValue < minVal || xValue > maxVal || yValue < minVal || yValue > maxVal || zValue < minVal || zValue > maxVal || gasState != HIGH){
-    fall_flag = 1;
-    warningButton = 1;
-    while(fall_flag == 1){
-      tone(buzz, 1000);  // 1000 Hz frequency
-      start = millis();  // starts a timer , counts in milli seconds
-
-      if((fall_flag == 1) && (warningButton == 0) && (start < 10000)){
-        noTone(buzz);
-        fall_flag = 0;
-      }
-
-      else if((fall_flag == 1) && (warningButton == 1) && (start >= 10000)){
-        tone(buzz , 1000);
-        fall_flag = 0;
-        client.publish("esp32/sensor/helmet", sig);//Code here to send it to MQTT Dashboard
-      }
-      break;
-    }
+// MQ
+  
+  if (gas_detected == LOW && buttonState == HIGH){
+    message = "GAS Present";
+    tone(buzz,1000);
+    delay(1000);
+  } else {
+    message = "GAS Not Present";
+    noTone(buzz);
   }
- 
-  delay(100);
-  
-  
-  
+
+  if (xValue > 2300 && buttonState == LOW){
+    tone(buzz,1000);
+    delay(1000);
+  } else {
+    noTone(buzz);
+  }
+
+
   long now = millis();
   if (now - lastMsg > 4000) {
     lastMsg = now;
 
-    char buffer1[10]; 
-    dtostrf(dht_temp, 1, 2, buffer1);
-    
-    char buffer2[10];  
-    dtostrf(dht_humidity,1,2, buffer2);
+    char temp_buffer[10];
+    dtostrf(t,1,2,temp_buffer);
 
-    char buffer3[10];  
-    itoa(mq2_val,buffer3,10);
+    char humidity_buffer[10];
+    dtostrf(h,1,2,humidity_buffer);
+
+    char gas_buffer[50];
+    strcpy(gas_buffer, message);
 
     char buffer4[10];  
     itoa(xValue,buffer4,10);
 
     char buffer5[10];  
-    itoa(yValue,buffer5,10);
+    itoa(randnum,buffer5,10);
 
     char buffer6[10];  
-    itoa(zValue,buffer6,10);
+    itoa(randnum1,buffer6,10);
 
-    client.publish("esp32/sensor/helmet", buffer1);
-    client.publish("esp32/sensor/helmet", buffer2);
-    client.publish("esp32/sensor/helmet", buffer3);
+    char buffer8[50]; 
+    strcpy(buffer8, sig2);
+    
+    client.publish("esp32/sensor/helmet", temp_buffer);
+    client.publish("esp32/sensor/helmet", humidity_buffer);
+    client.publish("esp32/sensor/helmet", gas_buffer);
     client.publish("esp32/sensor/helmet", buffer4);
     client.publish("esp32/sensor/helmet", buffer5);
     client.publish("esp32/sensor/helmet", buffer6);
+    client.publish("esp32/sensor/helmet", buffer8);
   }
- 
+
 }
